@@ -65,7 +65,7 @@ public class TestNeo4j extends Generator implements AutoCloseable {
             	var id = (int) (Math.random() * 100000000 + 1);
             	        	
             	// upload sudoku to server
-            	String qq = "CREATE (a:Sudoku {uuid:" + id + ", date : " + date + ",type :" + SudokuGenerator.getType() + ", row1:" + Arrays.toString(dailySudoku[0]) + ", row2:" + Arrays.toString(dailySudoku[1]) + ", row3:" + Arrays.toString(dailySudoku[2]) + ", row4:" + Arrays.toString(dailySudoku[3]) + ", row5:" + Arrays.toString(dailySudoku[4]) + ", row6:" + Arrays.toString(dailySudoku[7]) + ", row7:" + Arrays.toString(dailySudoku[8]) + ", row8:" + Arrays.toString(dailySudoku[7]) + ", row9:" + Arrays.toString(dailySudoku[8]) + "})";
+            	String qq = "CREATE (a:Sudoku {uuid:" + id + ", date : " + date + ",type :" + SudokuGenerator.getType() + ", row1:" + Arrays.toString(dailySudoku[0]) + ", row2:" + Arrays.toString(dailySudoku[1]) + ", row3:" + Arrays.toString(dailySudoku[2]) + ", row4:" + Arrays.toString(dailySudoku[3]) + ", row5:" + Arrays.toString(dailySudoku[4]) + ", row6:" + Arrays.toString(dailySudoku[5]) + ", row7:" + Arrays.toString(dailySudoku[6]) + ", row8:" + Arrays.toString(dailySudoku[7]) + ", row9:" + Arrays.toString(dailySudoku[8]) + "})";
             	var greeting = session.executeWrite(tx -> {
                     var query = new Query(qq);
                     var result = tx.run(query);
