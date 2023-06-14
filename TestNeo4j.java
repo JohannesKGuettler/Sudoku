@@ -10,19 +10,28 @@ import java.util.regex.Pattern;
 import static org.neo4j.driver.Values.parameters;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.UUID;
 
-public class TestNeo4j extends Generator implements AutoCloseable {
+public class TestNeo4j implements AutoCloseable {
     private final Driver driver;
+    private int type;
 
+    /**
+	 * TestNeo4j constructor to initialize the driver
+	 * @param driver: is the driver that lets us use the Neo4j Graph Database and through which we will write or get data
+	 */
     public TestNeo4j(String uri, String user, String password) {
-    	super();
         driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
     }
 
     @Override
+    /**
+	 * closes the current Neo4j driver -> needs to be done at every end of a transaction
+	 */
     public void close() throws RuntimeException {
     	try {
     		driver.close();
@@ -32,53 +41,39 @@ public class TestNeo4j extends Generator implements AutoCloseable {
     	    throw e;
     	}
     }
-
-    public void createPlayResult(final String username, int playtime) {
+    
+    /**
+	 * creates a Play result that is being uploaded to Neo4j
+	 * @param username: input by user
+	 * @param playtime: how much time the user took to finish
+	 * @param date: current day
+	 */
+    public void createPlayResult(final String username, int playtime, String date) {
         try (var session = driver.session()) {
             var greeting = session.executeWrite(tx -> {
-                var query = new Query("CREATE (a:PlayResult { name : $username, resulttime : $playtime } ) RETURN a.username + a.resulttime", parameters("username", username, "playtime",playtime));
+                var query = new Query("CREATE (a:PlayResult { name : $username, resulttime : $playtime, date:$date } ) RETURN a.username + a.resulttime", parameters("username", username, "playtime",playtime, "date",date));
                 var result = tx.run(query);
                 return result.single().get(0).asString();
             });
-            System.out.println(greeting);
         }
     }
-    
-    public void uploadDailySudoku(int amountDays, int date) {
-        try (var session = driver.session()) {
-        	super.generateStart();
-        	super.solveSudoku(super.getSolution());
-        	super.copySolution();
-        	super.generatePresentedSudoku();
-        	var dailySudoku = super.getPresentedSudoku();
-        	
-        	var random = (int) (Math.random() * 100000000 + 1);
-        	var idTest = "3";
-        	System.out.println(random);
-        	        	
-        	String qq = "CREATE (a:Sudoku {uuid:" + random + ", date : " + date + ", row1:" + Arrays.toString(dailySudoku[0]) + ", row2:" + Arrays.toString(dailySudoku[1]) + ", row3:" + Arrays.toString(dailySudoku[2]) + ", row4:" + Arrays.toString(dailySudoku[3]) + ", row5:" + Arrays.toString(dailySudoku[4]) + ", row6:" + Arrays.toString(dailySudoku[7]) + ", row7:" + Arrays.toString(dailySudoku[8]) + ", row8:" + Arrays.toString(dailySudoku[7]) + ", row9:" + Arrays.toString(dailySudoku[8]) + "})";
-        	var greeting = session.executeWrite(tx -> {
-                var query = new Query(qq);
-                var result = tx.run(query);
-                return result;
-            });
-        }
-    }
-    
-    public int[][] getDailySudoku(int date) {
-    	
-    	System.out.println(date);
-    	
-    	String qq = "MATCH (n:Sudoku) WHERE n.date="+ date +" RETURN n.date, n.row1, n.row2, n.row3, n.row4, n.row5, n.row6, n.row7, n.row8, n.row9;";
+
+    /**
+	 * gets the DailySudoku of the current day from Neo4j
+	 * @param date: current day
+	 * @return: returns the Daily Sudoku in an Array of integers
+	 */
+    public int[][] getDailySudoku(String date) {
+    	    	
+    	String qq = "MATCH (n:Sudoku) WHERE n.date="+ date +" RETURN n.date, n.row1, n.row2, n.row3, n.row4, n.row5, n.row6, n.row7, n.row8, n.row9, n.type as type ;";
     	
     	var query = new Query(qq);
 
         try (var session = driver.session(SessionConfig.forDatabase("neo4j"))) {
             var record = session.executeRead(tx -> tx.run(query).single());
             
-            System.out.println(record);
             var newrecord = record.asMap();
-            
+            this.type = ((Long) newrecord.get("type")).intValue();
             int[][] sudoku = new int[9][9];
             
             String row;
@@ -95,11 +90,7 @@ public class TestNeo4j extends Generator implements AutoCloseable {
             	for(int k=0; k<9; k++) {
             		sudoku[i][k] = Integer.parseInt(rowEntries[k]);
             	}
-            	
-            	//System.out.println(Arrays.toString(rowEntries));
-            	//System.out.println(Arrays.toString(sudoku[i]));
             }
-            //System.out.println(sudoku);
             return sudoku;
 
         } catch (Neo4jException ex) {
@@ -109,30 +100,71 @@ public class TestNeo4j extends Generator implements AutoCloseable {
     	
     }
     
-    public void getBestResults() {
+    /**
+	 * gets the Type/difficulty of the sudoku
+	 * @return: returns the type of the Sudoku: difficulty
+	 */
+    public int getType() {
+    	return this.type;
+    }
+    
+    /**
+   	 * gets the min/max/avg results of the daily sudoku and the top 10 best results
+   	 * @return: returns the min/max/avg as the first Array and then 10 Arrays of the 10 best results as String
+   	 */
+    public String[][] getBestResults(String uploadableDate) {
+    	
+    	String[][] returnArray = new String [11][];
+    	
+    	var queryone = new Query(
+                "MATCH (n:PlayResult) WHERE n.date=$uploadableDate RETURN max(n.resulttime) as max, avg(n.resulttime) as avg, min(n.resulttime) as min", parameters("uploadableDate",uploadableDate)
+                );
+
+        try (var session = driver.session(SessionConfig.forDatabase("neo4j"))) {
+            var record = session.executeRead(tx -> tx.run(queryone).list());
+         
+            record.forEach(e -> {
+            
+            	String[] medarray = new String [3];
+            	var min = String.valueOf(e.get("min"));
+            	var max = String.valueOf(e.get("max"));
+            	var avg = String.valueOf(e.get("avg"));
+            	medarray[0] = min;
+            	medarray[1] = max;
+            	medarray[2] = avg;
+            	returnArray[0] = medarray;
+            });
+            
+        } catch (Neo4jException ex) {
+        	System.out.println("Neo4jException-issue");
+            throw ex;
+        }
+    	
+    	// to get 10 best results of today
     	var query = new Query(
-                "MATCH (n:PlayResult) RETURN n, n.resulttime, n.name ORDER BY n.resulttime ASCENDING LIMIT 25;"
+                "MATCH (n:PlayResult) WHERE n.date=$uploadableDate RETURN n, n.resulttime as resulttime, n.name as name ORDER BY n.resulttime ASCENDING LIMIT 10;", parameters("uploadableDate",uploadableDate)
                 );
 
         try (var session = driver.session(SessionConfig.forDatabase("neo4j"))) {
             var record = session.executeRead(tx -> tx.run(query).list());
-            
-            record.forEach(e -> System.out.println(e));
+          
+            record.forEach(e -> {
+            	
+            	String[] medarray = new String [2];
+            	var resulttime = String.valueOf(e.get("resulttime"));
+            	var username = String.valueOf(e.get("name"));
+            	medarray[0] = resulttime;
+            	medarray[1] = username;
+            	
+            	returnArray[record.indexOf(e)+1] = medarray;
+            });
 
         } catch (Neo4jException ex) {
         	System.out.println("Neo4jException-issue");
             throw ex;
         }
+        
+         return returnArray;
     }
 
-    public static void main(String... args) {
-        	TestNeo4j greeter = new TestNeo4j("neo4j+s://3de5149f.databases.neo4j.io", "neo4j", "RtLJnX7gMMS4slo1pqPGPpgTxqYJl2O5qvZ9wjaH1M0");
-            //greeter.createPlayResult("username", 100);
-            //greeter.getBestResults();
-        	//greeter.uploadDailySudoku(amountDays as integer, date as integer);
-        	int d = 106062023;
-        	int[][] downloadedDailySudoku = greeter.getDailySudoku(d);
-
-        	greeter.close();
-    }
 }
