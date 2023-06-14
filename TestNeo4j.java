@@ -11,7 +11,6 @@ import static org.neo4j.driver.Values.parameters;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Map;
 
 public class TestNeo4j implements AutoCloseable {
