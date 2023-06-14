@@ -10,11 +10,9 @@ import java.util.regex.Pattern;
 import static org.neo4j.driver.Values.parameters;
 
 import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
-import java.util.UUID;
 
 public class TestNeo4j implements AutoCloseable {
     private final Driver driver;
