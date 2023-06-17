@@ -1,0 +1,18 @@
+.custom-button {
+    -fx-background-color: linear-gradient(to bottom, derive(linen, 10%), derive(linen, -10%));
+    -fx-text-fill: black;
+    -fx-font-family: "garamont";
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 5;
+}
+
+.custom-button:pressed {
+    -fx-background-color: linear-gradient(to bottom, derive(snow, -10%), derive(snow, 10%));
+}
+
+.custom-button:selected {
+    -fx-background-color: linear-gradient(to bottom, #FFCC00, #FFD633);
+    -fx-text-fill: white;
+}
+
