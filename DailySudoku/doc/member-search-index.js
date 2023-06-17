@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"game","c":"Startpage","l":"isSudokuCompleted(int[][])"},{"p":"game","c":"Startpage","l":"isValidSudoku(int, int, int, int[][], int)","u":"isValidSudoku(int,int,int,int[][],int)"},{"p":"game","c":"Startpage","l":"start(Stage)","u":"start(javafx.stage.Stage)"},{"p":"game","c":"Startpage","l":"Startpage()","u":"%3Cinit%3E()"}];updateSearchResults();
