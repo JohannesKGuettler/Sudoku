@@ -9,7 +9,7 @@ class ServerTest {
 
 	@Test
 	void testCreatePlayResult() {
-		Server greeter = new Server("neo4j+s://3de5149f.databases.neo4j.io", "neo4j", "RtLJnX7gMMS4slo1pqPGPpgTxqYJl2O5qvZ9wjaH1M0");
+		Server greeter = new Server("neo4j+s://72b6cafc.databases.neo4j.io", "neo4j", "fwYW8GEj5aCLmT5PMisyOO-pMmsQckUyO3qWrluxDa8");
 		// to see the result being uploaded after every run please reduce the "score" (middlevalue) by one and access it through the results variable
 		greeter.createPlayResult("test", 98, "010101");
 		var Results = greeter.getBestResults("010101");
@@ -20,7 +20,7 @@ class ServerTest {
 
 	@Test
 	void testGetDailySudoku() {
-		Server greeter = new Server("neo4j+s://3de5149f.databases.neo4j.io", "neo4j", "RtLJnX7gMMS4slo1pqPGPpgTxqYJl2O5qvZ9wjaH1M0");
+		Server greeter = new Server("neo4j+s://72b6cafc.databases.neo4j.io", "neo4j", "fwYW8GEj5aCLmT5PMisyOO-pMmsQckUyO3qWrluxDa8");
 		int[][] downloadedDailySudoku = greeter.getDailySudoku("20220101");
 		
 		String [] testSudoku = new String[] {"[0, 1, 0, 4, 3, 0, 6, 7, 0]","[0, 3, 0, 0, 0, 0, 0, 0, 0]","[5, 0, 0, 9, 0, 0, 0, 0, 2]","[3, 5, 0, 1, 8, 0, 0, 0, 0]","[0, 6, 0, 0, 0, 0, 2, 0, 0]","[0, 0, 0, 0, 0, 0, 8, 3, 7]","[0, 2, 0, 0, 0, 7, 0, 0, 3]","[0, 0, 0, 8, 0, 3, 1, 2, 0]", "[6, 0, 0, 2, 0, 0, 0, 0, 5]"};    
@@ -33,7 +33,7 @@ class ServerTest {
 
 	@Test
 	void testGetBestResults() {
-		Server greeter = new Server("neo4j+s://3de5149f.databases.neo4j.io", "neo4j", "RtLJnX7gMMS4slo1pqPGPpgTxqYJl2O5qvZ9wjaH1M0");
+		Server greeter = new Server("neo4j+s://72b6cafc.databases.neo4j.io", "neo4j", "fwYW8GEj5aCLmT5PMisyOO-pMmsQckUyO3qWrluxDa8");
 		var Results = greeter.getBestResults("111062023");
 		
 		// Results will have 11 arrays: first array are min/max/avg value of players on this date, remaining 10 are player records [[playtime][username]]
