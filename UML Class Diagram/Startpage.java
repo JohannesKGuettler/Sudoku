@@ -532,7 +532,7 @@ public class Startpage extends Application {
                 gridPane.addRow(0, rankHeader, nameHeader, timeHeader);
 
                 // Retrieve top 10 (name, time) and min, max, average time from database
-                Server greeter = new Server("neo4j+s://3de5149f.databases.neo4j.io", "neo4j", "RtLJnX7gMMS4slo1pqPGPpgTxqYJl2O5qvZ9wjaH1M0");
+                Server greeter = new Server("neo4j+s://72b6cafc.databases.neo4j.io", "neo4j", "fwYW8GEj5aCLmT5PMisyOO-pMmsQckUyO3qWrluxDa8");
                 String[][] result = greeter.getBestResults(todayDate);
                 greeter.close();
                 
@@ -691,7 +691,7 @@ public class Startpage extends Application {
         this.todayDate = date.format(formatter);
 
 		// Connect to server, download daily sudoku grid and determine type of sudoku (0: classic, 1: diagonal)
-		Server greeter = new Server("neo4j+s://3de5149f.databases.neo4j.io", "neo4j", "RtLJnX7gMMS4slo1pqPGPpgTxqYJl2O5qvZ9wjaH1M0");
+		Server greeter = new Server("neo4j+s://72b6cafc.databases.neo4j.io", "neo4j", "fwYW8GEj5aCLmT5PMisyOO-pMmsQckUyO3qWrluxDa8");
 		grid = greeter.getDailySudoku(todayDate); // SUBSTITUTE THIS FOR todayDate
 		type = greeter.getType();
 		greeter.close();
@@ -786,7 +786,7 @@ public class Startpage extends Application {
                     	playerName = nameField.getText();
                     	
                     	// Connect to server and save name, time, date
-                    	Server greeter = new Server("neo4j+s://3de5149f.databases.neo4j.io", "neo4j", "RtLJnX7gMMS4slo1pqPGPpgTxqYJl2O5qvZ9wjaH1M0");
+                    	Server greeter = new Server("neo4j+s://72b6cafc.databases.neo4j.io", "neo4j", "fwYW8GEj5aCLmT5PMisyOO-pMmsQckUyO3qWrluxDa8");
                     	greeter.createPlayResult(playerName, Integer.valueOf(elapsedTimeSeconds), todayDate);
                     	
                     	// Close alert
