@@ -131,7 +131,7 @@ public class SudokuUploader implements AutoCloseable {
     
     
     public static void main(String... args) {
-        	SudokuUploader greeter = new SudokuUploader("neo4j+s://3de5149f.databases.neo4j.io", "neo4j", "RtLJnX7gMMS4slo1pqPGPpgTxqYJl2O5qvZ9wjaH1M0");
+        	SudokuUploader greeter = new SudokuUploader("neo4j+s://72b6cafc.databases.neo4j.io", "neo4j", "fwYW8GEj5aCLmT5PMisyOO-pMmsQckUyO3qWrluxDa8");
         	int[][] sudoku = new int[][] {};
         	greeter.uploadSudokus(0, "2019-06-21", sudoku);
         	greeter.close();
